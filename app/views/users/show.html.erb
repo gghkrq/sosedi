@@ -1,0 +1,15 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @user %>
+
+<h2>Объявления пользователя</h2>
+
+<% @user.listings.each do |listing| %>
+  <div>
+    <%= link_to listing.title, listing_path(listing) %>
+  </div>
+<% end %>
+
+<div>
+  <%= link_to "Back to users", users_path %>
+</div>

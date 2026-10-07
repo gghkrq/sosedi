@@ -1,0 +1,37 @@
+<div id="<%= dom_id listing %>">
+  <div>
+    <strong>Title:</strong>
+    <%= listing.title %>
+  </div>
+
+  <div>
+    <strong>Описание:</strong>
+    <%= listing.description %>
+  </div>
+
+  <div>
+    <strong>Город:</strong>
+    <%= listing.city %>
+  </div>
+
+  <div>
+    <strong>Стоимость:</strong>
+    <%= listing.rent %>
+  </div>
+
+  <div>
+    <strong>Комнаты:</strong>
+    <%= listing.rooms %>
+  </div>
+
+  <div>
+    <strong>Количество людей:</strong>
+    <%= listing.max_people %>
+  </div>
+
+  <div>
+    <strong>Пользователь:</strong>
+    <%= link_to listing.user.name, user_path(listing.user) %>
+  </div>
+
+</div>

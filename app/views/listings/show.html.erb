@@ -1,0 +1,21 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @listing %>
+
+<h2>Отклики</h2>
+
+<% @listing.applications.each do |application| %>
+  <div>
+    <strong><%= application.user.name %></strong>
+    <p><%= application.message %></p>
+    <p>Статус: <%= application.status %></p>
+  </div>
+<% end %>
+
+<div>
+  <%= link_to "Откликнуться", new_listing_application_path(@listing) %>
+  <%= link_to "Edit this listing", edit_listing_path(@listing) %> |
+  <%= link_to "Back to listings", listings_path %>
+
+  <%= button_to "Destroy this listing", @listing, method: :delete %>
+</div>
