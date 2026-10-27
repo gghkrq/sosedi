@@ -1,0 +1,28 @@
+<% content_for :title, "Админка — объявления" %>
+<%= render "admin/shared/nav" %>
+
+<h1>Объявления (<%= @listings.size %>)</h1>
+
+<table border="1" cellpadding="6">
+  <tr>
+    <th>ID</th><th>Название</th><th>Автор</th><th>Город</th><th>Цена</th>
+    <th>Статус</th><th>Срок</th><th>Откликов</th><th>Жалоб</th><th></th>
+  </tr>
+  <% @listings.each do |listing| %>
+    <tr>
+      <td><%= listing.id %></td>
+      <td><%= link_to listing.title, listing %></td>
+      <td><%= link_to listing.user.name, listing.user %></td>
+      <td><%= listing.city %></td>
+      <td><%= rub(listing.rent) %></td>
+      <td><%= status_label(listing.status) %></td>
+      <td><%= active_period(listing) %></td>
+      <td><%= listing.applications.size %></td>
+      <td><%= listing.reports.size %></td>
+      <td>
+        <%= button_to "Удалить", admin_listing_path(listing), method: :delete,
+                      form: { onsubmit: "return confirm('Удалить объявление?')" } %>
+      </td>
+    </tr>
+  <% end %>
+</table>

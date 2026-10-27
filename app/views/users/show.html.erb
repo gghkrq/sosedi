@@ -1,15 +1,134 @@
-<p style="color: green"><%= notice %></p>
+<% own_profile = (@user == current_user) %>
+<% content_for :title, own_profile ? "Мой профиль" : @user.name %>
 
-<%= render @user %>
-
-<h2>Объявления пользователя</h2>
-
-<% @user.listings.each do |listing| %>
+<section class="page-head">
+  <h1 class="page-title page-title--md profile-title">
+    <%= avatar(@user, color: nil, link: false) %>
+    <span><%= [ @user.name, @user.age ].compact.join(", ") %></span>
+  </h1>
   <div>
-    <%= link_to listing.title, listing_path(listing) %>
+    <% if own_profile %>
+      <div class="actions">
+        <%= link_to "Редактировать профиль", edit_profile_path, class: "btn" %>
+        <%= button_to "Выйти", logout_path, method: :delete, class: "btn btn--ghost", form_class: "inline" %>
+      </div>
+    <% end %>
   </div>
-<% end %>
+</section>
 
-<div>
-  <%= link_to "Back to users", users_path %>
+<div class="split">
+  <div>
+    <section class="section">
+      <h2 class="section-title">Объявления</h2>
+      <% if @user.listings.any? %>
+        <ul class="rows">
+          <% @user.listings.each do |listing| %>
+            <li class="row">
+              <h3 class="row__title"><%= link_to listing.title, listing %></h3>
+              <p class="muted"><%= listing.city %>, <%= rub(listing.rent) %></p>
+              <%= listing_status_tag(listing) %>
+            </li>
+          <% end %>
+        </ul>
+      <% else %>
+        <p class="muted">Объявлений нет.</p>
+      <% end %>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">Отзывы (<%= @user.received_reviews.size %>)</h2>
+      <% if @user.received_reviews.any? %>
+        <ul class="rows">
+          <% @user.received_reviews.includes(:author).each do |review| %>
+            <li class="row">
+              <h3 class="row__title"><%= link_to review.author.name, review.author %></h3>
+              <p><%= review.text %></p>
+              <span>★ <%= review.rating %></span>
+            </li>
+          <% end %>
+        </ul>
+      <% else %>
+        <p class="muted">Отзывов пока нет.</p>
+      <% end %>
+    </section>
+
+    <% if own_profile %>
+      <section class="section">
+        <h2 class="section-title">Уведомления</h2>
+        <% if @user.notifications.any? %>
+          <ul class="rows">
+            <% @user.notifications.newest.each do |notification| %>
+              <li class="row">
+                <span class="muted small"><%= notification.created_at.strftime("%d.%m.%Y %H:%M") %></span>
+                <p><%= notification.text %></p>
+                <% unless notification.read %><span class="status status--new">новое</span><% end %>
+              </li>
+            <% end %>
+          </ul>
+        <% else %>
+          <p class="muted">Уведомлений нет.</p>
+        <% end %>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">Мои отклики</h2>
+        <% if @user.applications.any? %>
+          <ul class="rows">
+            <% @user.applications.includes(:listing).each do |application| %>
+              <li class="row">
+                <h3 class="row__title"><%= link_to application.listing.title, application.listing %></h3>
+                <p class="muted"><%= truncate(application.message, length: 100) %></p>
+                <%= status_tag(application.status) %>
+              </li>
+            <% end %>
+          </ul>
+        <% else %>
+          <p class="muted">Вы ещё никуда не откликались. <%= link_to "Посмотреть объявления", listings_path %></p>
+        <% end %>
+      </section>
+
+    <% end %>
+  </div>
+
+  <aside>
+    <h2 class="section-title">Описание</h2>
+    <% if @user.about.present? %>
+      <p class="profile-about"><%= @user.about %></p>
+    <% elsif own_profile %>
+      <p class="muted profile-about">Вы пока ничего о себе не рассказали. <%= link_to "Добавить описание", edit_profile_path %></p>
+    <% else %>
+      <p class="muted profile-about">Пользователь пока ничего о себе не рассказал.</p>
+    <% end %>
+
+    <h2 class="section-title">О пользователе</h2>
+    <ul class="facts">
+      <li><span>Рейтинг</span><span>★ <%= @user.rating %></span></li>
+      <li><span>Город</span><span><%= @user.city.presence || "—" %></span></li>
+      <li><span>Занятость</span><span><%= @user.occupation.presence || "—" %></span></li>
+      <% if own_profile %>
+        <li><span>Почта</span><span><%= @user.email %></span></li>
+      <% end %>
+    </ul>
+
+    <h2 class="section-title" style="margin-top: 48px">Предпочтения</h2>
+    <% if (preference = @user.preference) %>
+      <ul class="facts">
+        <li><span>Цена за место</span><span><%= rub(preference.budget) %></span></li>
+        <li><span>Курение</span><span><%= yes_no(preference.smoking) %></span></li>
+        <li><span>Животные</span><span><%= yes_no(preference.pets) %></span></li>
+        <li><span>Чистота</span><span><%= preference.cleanliness.presence || "не важно" %></span></li>
+        <li><span>График</span><span><%= preference.schedule.presence || "не важно" %></span></li>
+        <li><span>Гости</span><span><%= preference.guests.presence || "не важно" %></span></li>
+        <li><span>Шум</span><span><%= preference.noise.presence || "не важно" %></span></li>
+        <li><span>Алкоголь</span><span><%= preference.alcohol.presence || "не важно" %></span></li>
+        <li><span>Работаю из дома</span><span><%= yes_no(preference.remote_work) %></span></li>
+        <li><span>Общие продукты</span><span><%= yes_no(preference.shared_food) %></span></li>
+      </ul>
+    <% else %>
+      <p class="muted">
+        Не указаны.
+        <% if own_profile %><%= link_to "Заполнить", edit_profile_path %><% end %>
+      </p>
+    <% end %>
+  </aside>
 </div>

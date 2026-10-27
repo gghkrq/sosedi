@@ -1,0 +1,10 @@
+<% if object.errors.any? %>
+  <div class="errors">
+    <p>Проверьте поля:</p>
+    <ul>
+      <% object.errors.each do |error| %>
+        <li><%= error.full_message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>

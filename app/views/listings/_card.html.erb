@@ -1,0 +1,28 @@
+<% match = compatibility_for(listing) %>
+<article class="card" id="<%= dom_id listing %>">
+  <div>
+    <div class="card__top">
+      <h3 class="card__title"><%= link_to listing.title, listing %></h3>
+      <% if match %>
+        <span class="match-badge" title="Совместимость с автором"><%= match.percent %>%</span>
+      <% end %>
+    </div>
+    <p class="muted small card__city">
+      <%= listing.city %>
+      <% unless listing.currently_active? %> <%= listing_status_tag(listing) %><% end %>
+    </p>
+  </div>
+
+  <p class="card__price"><%= rub(listing.rent) %> <span class="small muted">в месяц</span></p>
+
+  <% if listing.tags.any? %>
+    <div class="tags">
+      <% listing.tags.each do |tag| %><span class="tag"><%= tag.name %></span><% end %>
+    </div>
+  <% end %>
+
+  <div class="card__footer">
+    <%= residents_block(listing) %>
+    <%= link_to "↗", listing, class: "card__arrow", "aria-label": "Открыть объявление" %>
+  </div>
+</article>

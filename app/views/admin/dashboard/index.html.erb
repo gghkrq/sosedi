@@ -1,0 +1,38 @@
+<% content_for :title, "Админка" %>
+<%= render "admin/shared/nav" %>
+
+<h1>Обзор сайта</h1>
+
+<table border="1" cellpadding="6">
+  <% @stats.each do |name, value| %>
+    <tr><td><%= name %></td><td><strong><%= value %></strong></td></tr>
+  <% end %>
+</table>
+
+<h2>Новые жалобы (<%= @new_reports.size %>)</h2>
+<% @new_reports.each do |report| %>
+  <p>
+    <%= report.user.name %> → <%= link_to report.listing.title, report.listing %>:
+    <%= report.reason %>
+  </p>
+<% end %>
+<% if @new_reports.empty? %><p>Новых жалоб нет.</p><% end %>
+<p><%= link_to "Все жалобы", admin_reports_path %></p>
+
+<h2>Новые пользователи</h2>
+<% @new_users.each do |user| %>
+  <p><%= link_to user.name, user %> (<%= user.email %>) — <%= user.created_at.strftime("%d.%m.%Y %H:%M") %></p>
+<% end %>
+
+<h2>Новые объявления</h2>
+<% @new_listings.each do |listing| %>
+  <p><%= link_to listing.title, listing %> — <%= listing.user.name %>, <%= listing.created_at.strftime("%d.%m.%Y %H:%M") %></p>
+<% end %>
+
+<h2>Последние отклики</h2>
+<% @new_applications.each do |application| %>
+  <p>
+    <%= application.user.name %> → <%= link_to application.listing.title, application.listing %>
+    (<%= status_label(application.status) %>)
+  </p>
+<% end %>

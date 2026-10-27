@@ -1,11 +1,8 @@
-<% content_for :title, "New application" %>
+<% content_for :title, "Отклик на объявление" %>
 
-<h1>New application</h1>
+<section class="page-head">
+  <h1 class="page-title page-title--md">Отклик на «<%= @listing.title %>»</h1>
+  <p class="lead">Автор получит уведомление и увидит ваш профиль.</p>
+</section>
 
 <%= render "form", application: @application %>
-
-<br>
-
-<div>
-  <<%= link_to "Back to listing", listing_path(@listing) %>
-</div>

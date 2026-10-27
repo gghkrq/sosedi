@@ -1,75 +1,39 @@
 class ApplicationsController < ApplicationController
-  before_action :set_application, only: %i[ show edit update destroy ]
+  before_action :require_login
+  before_action :set_listing
+  before_action :forbid_own_listing
 
-  # GET /applications or /applications.json
-  def index
-    @applications = Application.all
-  end
-
-  # GET /applications/1 or /applications/1.json
-  def show
-  end
-
-  # GET /applications/new
   def new
-  @listing = Listing.find(params[:listing_id])
-  @application = @listing.applications.build
+    @application = @listing.applications.build
   end
 
-  # GET /applications/1/edit
-  def edit
-  end
+  def create
+    @application = @listing.applications.build(application_params)
+    @application.user = current_user
 
-  # POST /applications or /applications.json
- def create
-  @listing = Listing.find(params[:listing_id])
-  @application = @listing.applications.build(application_params)
-
-  # Временно используем первого пользователя из базы
-  @application.user = User.first
-
-  respond_to do |format|
     if @application.save
-      format.html { redirect_to listing_path(@listing), notice: "Application was successfully created." }
-      format.json { render :show, status: :created, location: @application }
+      Notification.create!(
+        user: @listing.user,
+        text: "#{current_user.name} откликнулся(-ась) на ваше объявление «#{@listing.title}»"
+      )
+      redirect_to listing_path(@listing), notice: "Отклик отправлен."
     else
-      format.html { render :new, status: :unprocessable_content }
-      format.json { render json: @application.errors, status: :unprocessable_content }
-    end
-  end
-end
-
-  # PATCH/PUT /applications/1 or /applications/1.json
-  def update
-    respond_to do |format|
-      if @application.update(application_params)
-        format.html { redirect_to @application, notice: "Application was successfully updated.", status: :see_other }
-        format.json { render :show, status: :ok, location: @application }
-      else
-        format.html { render :edit, status: :unprocessable_content }
-        format.json { render json: @application.errors, status: :unprocessable_content }
-      end
-    end
-  end
-
-  # DELETE /applications/1 or /applications/1.json
-  def destroy
-    @application.destroy!
-
-    respond_to do |format|
-      format.html { redirect_to applications_path, notice: "Application was successfully destroyed.", status: :see_other }
-      format.json { head :no_content }
+      render :new, status: :unprocessable_content
     end
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_application
-      @application = Application.find(params.expect(:id))
+    def set_listing
+      @listing = Listing.find(params[:listing_id])
     end
 
-    # Only allow a list of trusted parameters through.
+    def forbid_own_listing
+      return unless @listing.user == current_user
+
+      redirect_to @listing, alert: "Нельзя откликнуться на своё объявление."
+    end
+
     def application_params
-      params.expect(application: [ :message, :status, :user_id, :listing_id ])
+      params.expect(application: [ :message ])
     end
 end

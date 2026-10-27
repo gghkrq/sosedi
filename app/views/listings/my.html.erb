@@ -1,0 +1,35 @@
+<% content_for :title, "Мои объявления" %>
+
+<section class="page-head">
+  <h1 class="page-title">Мои объявления</h1>
+  <div>
+    <p class="lead">Здесь все ваши объявления, включая закрытые и с истёкшим сроком. В общем списке видны только активные.</p>
+    <div class="actions">
+      <%= link_to "Разместить объявление", new_listing_path, class: "btn" %>
+    </div>
+  </div>
+</section>
+
+<% if @listings.any? %>
+  <ul class="rows">
+    <% @listings.each do |listing| %>
+      <li class="row">
+        <div>
+          <h3 class="row__title"><%= link_to listing.title, listing %></h3>
+          <p class="muted small"><%= listing.city %>, <%= rub(listing.rent) %></p>
+        </div>
+        <div>
+          <p><%= listing_status_tag(listing) %></p>
+          <p class="muted small">Активно: <%= active_period(listing) %>. Откликов: <%= listing.applications.size %></p>
+          <%= residents_block(listing) %>
+        </div>
+        <%= link_to "Редактировать", edit_listing_path(listing), class: "btn btn--ghost btn--small" %>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <div class="empty">
+    <p>У вас пока нет объявлений.</p>
+    <%= link_to "Разместить первое", new_listing_path, class: "btn" %>
+  </div>
+<% end %>

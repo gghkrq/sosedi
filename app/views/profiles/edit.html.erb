@@ -1,0 +1,104 @@
+<% content_for :title, "Редактирование профиля" %>
+
+<section class="page-head">
+  <h1 class="page-title page-title--md">Редактирование профиля</h1>
+  <p class="lead">Заполненный профиль и предпочтения помогают другим понять, подходите ли вы друг другу.</p>
+</section>
+
+<%= form_with model: @user, url: profile_path, method: :patch, class: "form form--wide" do |form| %>
+  <%= render "shared/errors", object: @user %>
+
+  <div class="form-columns">
+    <div>
+      <h2>Профиль</h2>
+
+      <div class="field">
+        <%= form.label :name, "Имя" %>
+        <%= form.text_field :name %>
+      </div>
+
+      <div class="field">
+        <%= form.label :age, "Возраст" %>
+        <%= form.number_field :age, min: 16 %>
+      </div>
+
+      <div class="field">
+        <%= form.label :city, "Город" %>
+        <%= form.text_field :city %>
+      </div>
+
+      <div class="field">
+        <%= form.label :occupation, "Занятость" %>
+        <%= form.text_field :occupation, placeholder: "Учусь на дизайнера, работаю в IT…" %>
+      </div>
+
+      <div class="field">
+        <%= form.label :about, "О себе" %>
+        <%= form.textarea :about, rows: 5 %>
+      </div>
+    </div>
+
+    <div>
+      <h2>Предпочтения по соседству</h2>
+
+      <%= form.fields_for :preference do |pref| %>
+        <div class="checks">
+          <div class="check">
+            <%= pref.check_box :smoking %>
+            <%= pref.label :smoking, "Курю или нормально отношусь к курению" %>
+          </div>
+
+          <div class="check">
+            <%= pref.check_box :pets %>
+            <%= pref.label :pets, "Есть животные или не против них" %>
+          </div>
+
+          <div class="check">
+            <%= pref.check_box :remote_work %>
+            <%= pref.label :remote_work, "Работаю или учусь из дома" %>
+          </div>
+
+          <div class="check">
+            <%= pref.check_box :shared_food %>
+            <%= pref.label :shared_food, "Готов(-а) делить продукты и готовить вместе" %>
+          </div>
+        </div>
+
+        <div class="field">
+          <%= pref.label :budget, "Желаемая цена за место, ₽" %>
+          <%= pref.number_field :budget %>
+        </div>
+
+        <div class="field">
+          <%= pref.label :cleanliness, "Чистота" %>
+          <%= pref.select :cleanliness, Preference::CLEANLINESS, include_blank: "не важно" %>
+        </div>
+
+        <div class="field">
+          <%= pref.label :schedule, "График" %>
+          <%= pref.select :schedule, Preference::SCHEDULES, include_blank: "не важно" %>
+        </div>
+
+        <div class="field">
+          <%= pref.label :guests, "Как часто бывают гости" %>
+          <%= pref.select :guests, Preference::GUESTS, include_blank: "не важно" %>
+        </div>
+
+        <div class="field">
+          <%= pref.label :noise, "Отношение к шуму" %>
+          <%= pref.select :noise, Preference::NOISE, include_blank: "не важно" %>
+        </div>
+
+        <div class="field">
+          <%= pref.label :alcohol, "Алкоголь" %>
+          <%= pref.select :alcohol, Preference::ALCOHOL, include_blank: "не важно" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="actions">
+    <%= form.submit "Сохранить профиль", class: "btn" %>
+    <%= link_to "Отмена", profile_path %>
+  </div>
+<% end %>

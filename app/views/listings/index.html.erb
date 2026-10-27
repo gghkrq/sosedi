@@ -1,16 +1,45 @@
-<p style="color: green"><%= notice %></p>
+<% content_for :title, "Объявления" %>
 
-<% content_for :title, "Listings" %>
+<section class="page-head">
+  <h1 class="page-title">Объявления</h1>
+  <div>
+    <p class="lead">Люди, которые ищут соседей прямо сейчас.</p>
+    <div class="actions">
+      <%= link_to "Разместить объявление", new_listing_path, class: "btn" %>
+    </div>
+  </div>
+</section>
 
-<h1>Listings</h1>
+<div class="filters">
+  <div class="filter-city">
+    <span class="filter-city__name"><%= params[:city].presence || "Все регионы" %></span>
 
-<div id="listings">
-  <% @listings.each do |listing| %>
-    <%= render listing %>
-    <p>
-      <%= link_to "Show this listing", listing %>
-    </p>
-  <% end %>
+    <details class="dropdown">
+      <summary class="icon-btn" title="Выбрать город" aria-label="Выбрать город"><%= settings_icon %></summary>
+      <div class="dropdown__menu">
+        <%= link_to "Все регионы", filter_path(city: nil), class: ("is-active" if params[:city].blank?) %>
+        <% @cities.each do |city| %>
+          <%= link_to city, filter_path(city: city), class: ("is-active" if params[:city] == city) %>
+        <% end %>
+      </div>
+    </details>
+  </div>
+
+  <div class="tags">
+    <%= link_to "Все теги", filter_path(tag: nil), class: [ "tag", ("is-active" if params[:tag].blank?) ] %>
+    <% @tags.each do |name| %>
+      <%= link_to name, filter_path(tag: name), class: [ "tag", ("is-active" if params[:tag] == name) ] %>
+    <% end %>
+  </div>
 </div>
 
-<%= link_to "New listing", new_listing_path %>
+<% if @listings.any? %>
+  <div class="grid">
+    <%= render partial: "card", collection: @listings, as: :listing %>
+  </div>
+<% else %>
+  <div class="empty">
+    <p>По этим фильтрам объявлений нет. Попробуйте другой город или тег.</p>
+    <%= link_to "Сбросить фильтры", listings_path, class: "btn" %>
+  </div>
+<% end %>

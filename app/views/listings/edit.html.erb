@@ -1,12 +1,8 @@
-<% content_for :title, "Editing listing" %>
+<% content_for :title, "Редактирование объявления" %>
 
-<h1>Editing listing</h1>
+<section class="page-head">
+  <h1 class="page-title page-title--md">Редактирование объявления</h1>
+  <p class="lead"><%= link_to "Открыть объявление", @listing %></p>
+</section>
 
 <%= render "form", listing: @listing %>
-
-<br>
-
-<div>
-  <%= link_to "Show this listing", @listing %> |
-  <%= link_to "Back to listings", listings_path %>
-</div>

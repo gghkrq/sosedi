@@ -1,11 +1,8 @@
-<% content_for :title, "New listing" %>
+<% content_for :title, "Новое объявление" %>
 
-<h1>New listing</h1>
+<section class="page-head">
+  <h1 class="page-title">Новое объявление</h1>
+  <p class="lead">Чем подробнее описание и теги, тем точнее отклики.</p>
+</section>
 
 <%= render "form", listing: @listing %>
-
-<br>
-
-<div>
-  <%= link_to "Back to listings", listings_path %>
-</div>

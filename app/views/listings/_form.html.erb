@@ -1,52 +1,62 @@
-<%= form_with(model: listing) do |form| %>
-  <% if listing.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(listing.errors.count, "error") %> prohibited this listing from being saved:</h2>
+<%= form_with(model: listing, class: "form") do |form| %>
+  <%= render "shared/errors", object: listing %>
 
-      <ul>
-        <% listing.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
-
-  <div>
-    <%= form.label :title, style: "display: block" %>
-    <%= form.text_field :title %>
+  <div class="field">
+    <%= form.label :title, "Название" %>
+    <%= form.text_field :title, placeholder: "Ищу соседа в двушку у метро" %>
   </div>
 
-  <div>
-    <%= form.label :description, style: "display: block" %>
-    <%= form.textarea :description %>
+  <div class="field">
+    <%= form.label :description, "Описание" %>
+    <%= form.textarea :description, rows: 5 %>
   </div>
 
-  <div>
-    <%= form.label :city, style: "display: block" %>
+  <div class="field">
+    <%= form.label :city, "Город" %>
     <%= form.text_field :city %>
   </div>
 
-  <div>
-    <%= form.label :rent, style: "display: block" %>
+  <div class="field">
+    <%= form.label :rent, "Стоимость в месяц, ₽" %>
     <%= form.number_field :rent %>
   </div>
 
-  <div>
-    <%= form.label :rooms, style: "display: block" %>
+  <div class="field">
+    <%= form.label :rooms, "Количество комнат" %>
     <%= form.number_field :rooms %>
   </div>
 
-  <div>
-    <%= form.label :max_people, style: "display: block" %>
+  <div class="field">
+    <%= form.label :max_people, "Максимум человек" %>
     <%= form.number_field :max_people %>
   </div>
 
-  <div>
-    <%= form.label :user_id, style: "display: block" %>
-    <%= form.text_field :user_id %>
+  <div class="field">
+    <%= form.label :status, "Статус" %>
+    <%= form.select :status, Listing::STATUSES.map { |s| [ status_label(s), s ] } %>
   </div>
 
-  <div>
-    <%= form.submit %>
+  <div class="field">
+    <label>Срок активности</label>
+    <div class="choice">
+      <span>
+        <%= form.radio_button :duration, "unlimited" %>
+        <%= form.label :duration_unlimited, "Бессрочно", style: "margin: 0; color: inherit; font-size: 16px" %>
+      </span>
+      <span>
+        <%= form.radio_button :duration, "until_date" %>
+        <%= form.label :duration_until_date, "До даты", style: "margin: 0; color: inherit; font-size: 16px" %>
+        <%= form.date_field :active_until, min: Date.current %>
+      </span>
+    </div>
+  </div>
+
+  <div class="field">
+    <%= form.label :tag_names, "Теги через запятую" %>
+    <%= form.text_field :tag_names, placeholder: "рядом с метро, можно с животными" %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit "Сохранить объявление", class: "btn" %>
   </div>
 <% end %>

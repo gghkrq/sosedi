@@ -1,0 +1,22 @@
+<% content_for :title, "Админка — отзывы" %>
+<%= render "admin/shared/nav" %>
+
+<h1>Отзывы (<%= @reviews.size %>)</h1>
+
+<table border="1" cellpadding="6">
+  <tr><th>ID</th><th>Автор</th><th>Кому</th><th>Оценка</th><th>Текст</th><th>Дата</th><th></th></tr>
+  <% @reviews.each do |review| %>
+    <tr>
+      <td><%= review.id %></td>
+      <td><%= link_to review.author.name, review.author %></td>
+      <td><%= link_to review.recipient.name, review.recipient %></td>
+      <td><%= review.rating %>/5</td>
+      <td><%= review.text %></td>
+      <td><%= review.created_at.strftime("%d.%m.%Y") %></td>
+      <td>
+        <%= button_to "Удалить", admin_review_path(review), method: :delete,
+                      form: { onsubmit: "return confirm('Удалить отзыв?')" } %>
+      </td>
+    </tr>
+  <% end %>
+</table>

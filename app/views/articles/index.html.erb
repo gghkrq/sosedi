@@ -1,0 +1,27 @@
+<% content_for :title, "Статьи" %>
+
+<section class="page-head">
+  <h1 class="page-title">Статьи</h1>
+  <p class="lead">Как найти соседа, договориться о быте и честно делить расходы — советы редакции Roomatch.</p>
+</section>
+
+<% if @articles.any? %>
+  <div class="grid">
+    <% @articles.each do |article| %>
+      <article class="card">
+        <div class="card__top">
+          <span class="tag"><%= article.category %></span>
+          <span class="muted small"><%= article.created_at.strftime("%d.%m.%Y") %></span>
+        </div>
+        <h3 class="card__title"><%= link_to article.title, not_found_path %></h3>
+        <p class="muted"><%= article.summary %></p>
+        <div class="card__footer">
+          <%= link_to "Читать статью", not_found_path %>
+          <%= link_to "↗", not_found_path, class: "card__arrow", "aria-label": "Открыть статью" %>
+        </div>
+      </article>
+    <% end %>
+  </div>
+<% else %>
+  <div class="empty"><p>Статей пока нет.</p></div>
+<% end %>

@@ -1,0 +1,32 @@
+<section class="match">
+  <% if @compatibility.available? %>
+    <div>
+      <p class="match__percent"><%= @compatibility.percent %>%</p>
+      <p>совместимость с <%= link_to @listing.user.name, @listing.user %></p>
+      <p class="muted small">Совпадает <%= @compatibility.matches_count %> из <%= @compatibility.items.size %> пунктов</p>
+    </div>
+
+    <ul class="match__list">
+      <li class="muted small"><span></span><span>Пункт</span><span>Вы / <%= @listing.user.name %></span></li>
+      <% @compatibility.items.each do |item| %>
+        <% kind = { 1.0 => "yes", 0.5 => "half" }.fetch(item.score, "no") %>
+        <li>
+          <span class="match__icon match__icon--<%= kind %>"><%= { "yes" => "✓", "half" => "≈", "no" => "✕" }[kind] %></span>
+          <span><%= item.title %></span>
+          <span class="muted"><%= item.mine %> / <%= item.theirs %></span>
+        </li>
+      <% end %>
+    </ul>
+  <% elsif current_user.preference.nil? %>
+    <div>
+      <p class="section-title">Совместимость</p>
+      <p>Заполните свои предпочтения, и здесь появится процент совместимости с автором.</p>
+      <%= link_to "Заполнить предпочтения", edit_profile_path, class: "btn" %>
+    </div>
+  <% else %>
+    <div>
+      <p class="section-title">Совместимость</p>
+      <p class="muted">Автор ещё не указал свои предпочтения, поэтому посчитать совместимость пока нельзя.</p>
+    </div>
+  <% end %>
+</section>

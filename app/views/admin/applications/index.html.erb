@@ -1,0 +1,18 @@
+<% content_for :title, "Админка — отклики" %>
+<%= render "admin/shared/nav" %>
+
+<h1>Отклики (<%= @applications.size %>)</h1>
+
+<table border="1" cellpadding="6">
+  <tr><th>ID</th><th>Кто</th><th>На объявление</th><th>Сообщение</th><th>Статус</th><th>Дата</th></tr>
+  <% @applications.each do |application| %>
+    <tr>
+      <td><%= application.id %></td>
+      <td><%= link_to application.user.name, application.user %></td>
+      <td><%= link_to application.listing.title, application.listing %></td>
+      <td><%= application.message %></td>
+      <td><%= status_label(application.status) %></td>
+      <td><%= application.created_at.strftime("%d.%m.%Y") %></td>
+    </tr>
+  <% end %>
+</table>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Админка Roomatch" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+  </head>
+
+  <body>
+    <p>
+      <%= link_to "← На сайт", root_path %> |
+      Вы: <strong><%= current_user&.name %></strong>
+      <%= button_to "Выйти", logout_path, method: :delete, form: { style: "display: inline" } %>
+    </p>
+    <hr>
+
+    <% if notice.present? %><p style="color: green"><%= notice %></p><% end %>
+    <% if alert.present? %><p style="color: red"><%= alert %></p><% end %>
+
+    <%= yield %>
+  </body>
+</html>

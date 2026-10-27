@@ -1,0 +1,27 @@
+<%= form_with model: [ :admin, article ] do |form| %>
+  <%= render "shared/errors", object: article %>
+
+  <div>
+    <%= form.label :title, "Заголовок", style: "display: block" %>
+    <%= form.text_field :title, size: 60 %>
+  </div>
+
+  <div>
+    <%= form.label :category, "Рубрика", style: "display: block" %>
+    <%= form.text_field :category, placeholder: "Советы, Быт, Деньги..." %>
+  </div>
+
+  <div>
+    <%= form.label :summary, "Краткое описание", style: "display: block" %>
+    <%= form.text_field :summary, size: 80 %>
+  </div>
+
+  <div>
+    <%= form.label :body, "Текст статьи", style: "display: block" %>
+    <%= form.textarea :body, rows: 15, cols: 80 %>
+  </div>
+
+  <div>
+    <%= form.submit "Сохранить" %>
+  </div>
+<% end %>

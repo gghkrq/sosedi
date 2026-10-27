@@ -1,0 +1,34 @@
+<% content_for :title, "Страница не найдена" %>
+
+<section class="not-found">
+  <div class="not-found__text">
+    <p class="not-found__code">404</p>
+    <h1 class="not-found__title">Эта комната пока пустует</h1>
+    <p class="lead">Такой страницы нет или она ещё в разработке. Зато в объявлениях точно кто-то ищет соседа.</p>
+    <div class="actions">
+      <%= link_to "На главную", root_path, class: "btn btn--large" %>
+      <%= link_to "Смотреть объявления", listings_path, class: "btn btn--ghost btn--large" %>
+    </div>
+  </div>
+
+  <div class="card not-found__card" aria-hidden="true">
+    <div class="card__top">
+      <h3 class="card__title">Страница 404</h3>
+      <span class="match-badge">0%</span>
+    </div>
+    <p class="muted small">Город не найден</p>
+    <p class="card__price">0 ₽ <span class="small muted">в месяц</span></p>
+    <div class="tags">
+      <span class="tag">нет такой страницы</span>
+      <span class="tag">в разработке</span>
+    </div>
+    <div class="card__footer">
+      <div class="residents">
+        <div class="avatars">
+          <% 3.times do %><span class="avatar avatar--free"><%= plus_icon %></span><% end %>
+        </div>
+        <span class="muted">0 из 3, ищут всех</span>
+      </div>
+    </div>
+  </div>
+</section>

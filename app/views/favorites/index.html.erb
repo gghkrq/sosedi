@@ -1,0 +1,17 @@
+<% content_for :title, "Избранное" %>
+
+<section class="page-head">
+  <h1 class="page-title">Избранное</h1>
+  <p class="lead">Объявления, которые вы сохранили. Добавить можно кнопкой с сердечком на странице объявления.</p>
+</section>
+
+<% if @listings.any? %>
+  <div class="grid">
+    <%= render partial: "listings/card", collection: @listings, as: :listing %>
+  </div>
+<% else %>
+  <div class="empty">
+    <p>В избранном пока пусто.</p>
+    <%= link_to "Смотреть объявления", listings_path, class: "btn" %>
+  </div>
+<% end %>

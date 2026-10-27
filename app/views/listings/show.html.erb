@@ -1,21 +1,105 @@
-<p style="color: green"><%= notice %></p>
+<% content_for :title, @listing.title %>
 
-<%= render @listing %>
-
-<h2>Отклики</h2>
-
-<% @listing.applications.each do |application| %>
+<section class="page-head">
+  <h1 class="page-title page-title--md"><%= @listing.title %></h1>
   <div>
-    <strong><%= application.user.name %></strong>
-    <p><%= application.message %></p>
-    <p>Статус: <%= application.status %></p>
+    <p><%= listing_status_tag(@listing) %></p>
+    <p class="muted"><%= @listing.city %>. Автор: <%= link_to @listing.user.name, @listing.user %>, ★ <%= @listing.user.rating %></p>
   </div>
+</section>
+
+<% if @compatibility %>
+  <%= render "compatibility" %>
+<% elsif !logged_in? %>
+  <section class="match">
+    <div>
+      <p class="section-title">Совместимость</p>
+      <p><%= link_to "Войдите", login_path %>, чтобы увидеть, насколько вы подходите автору по предпочтениям.</p>
+    </div>
+  </section>
 <% end %>
 
-<div>
-  <%= link_to "Откликнуться", new_listing_application_path(@listing) %>
-  <%= link_to "Edit this listing", edit_listing_path(@listing) %> |
-  <%= link_to "Back to listings", listings_path %>
+<div class="split">
+  <div>
+    <section class="section">
+      <h2 class="section-title">Описание</h2>
+      <%= simple_format(@listing.description) %>
 
-  <%= button_to "Destroy this listing", @listing, method: :delete %>
+      <% if @listing.tags.any? %>
+        <div class="tags" style="margin-top: 24px">
+          <% @listing.tags.each do |tag| %><span class="tag"><%= tag.name %></span><% end %>
+        </div>
+      <% end %>
+    </section>
+
+    <% if @participant %>
+      <section class="section">
+        <h2 class="section-title">Отклики (<%= @applications.size %>)</h2>
+        <% if @applications.any? %>
+          <ul class="rows">
+            <% @applications.each do |application| %>
+              <li class="row">
+                <h3 class="row__title"><%= link_to application.user.name, application.user %></h3>
+                <p><%= application.message %></p>
+                <%= status_tag(application.status) %>
+              </li>
+            <% end %>
+          </ul>
+        <% else %>
+          <p class="muted">Откликов пока нет.</p>
+        <% end %>
+      </section>
+    <% end %>
+
+    <section class="section">
+      <h2 class="section-title">Отзывы о <%= @listing.user.name %> (<%= @reviews.size %>)</h2>
+      <% if @reviews.any? %>
+        <ul class="rows">
+          <% @reviews.each do |review| %>
+            <li class="row">
+              <h3 class="row__title"><%= link_to review.author.name, review.author %></h3>
+              <p><%= review.text %></p>
+              <span>★ <%= review.rating %></span>
+            </li>
+          <% end %>
+        </ul>
+      <% else %>
+        <p class="muted">Отзывов пока нет.</p>
+      <% end %>
+    </section>
+  </div>
+
+  <aside>
+    <p class="card__price"><%= rub(@listing.rent) %> <span class="small muted">в месяц</span></p>
+
+    <ul class="facts" style="margin-top: 24px">
+      <li><span>Живут</span><%= residents_block(@listing) %></li>
+      <li><span>Город</span><span><%= @listing.city %></span></li>
+      <li><span>Комнат</span><span><%= @listing.rooms %></span></li>
+      <li><span>Максимум человек</span><span><%= @listing.max_people %></span></li>
+      <li><span>Активно</span><span><%= active_period(@listing) %></span></li>
+      <li><span>В избранном</span><span><%= @listing.favorites.count %></span></li>
+    </ul>
+
+    <div class="actions">
+      <% if current_user == @listing.user %>
+        <%= link_to "Редактировать", edit_listing_path(@listing), class: "btn" %>
+        <%= button_to "Удалить", @listing, method: :delete, class: "btn btn--danger", form_class: "inline",
+                      form: { onsubmit: "return confirm('Удалить объявление?')" } %>
+      <% else %>
+        <%= link_to "Откликнуться", new_listing_application_path(@listing), class: "btn" %>
+        <% if @favorited %>
+          <%= button_to listing_favorite_path(@listing), method: :delete, class: "icon-btn is-active",
+                        form_class: "inline", title: "Убрать из избранного", "aria-label": "Убрать из избранного" do %>
+            <%= heart_icon %>
+          <% end %>
+        <% else %>
+          <%= button_to listing_favorite_path(@listing), method: :post, class: "icon-btn",
+                        form_class: "inline", title: "В избранное", "aria-label": "В избранное" do %>
+            <%= heart_icon %>
+          <% end %>
+        <% end %>
+      <% end %>
+    </div>
+  </aside>
 </div>
