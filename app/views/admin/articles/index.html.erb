@@ -1,0 +1,23 @@
+<% content_for :title, "Админка — статьи" %>
+<%= render "admin/shared/nav" %>
+
+<h1>Статьи (<%= @articles.size %>)</h1>
+
+<p><%= link_to "Написать статью", new_admin_article_path %></p>
+
+<table border="1" cellpadding="6">
+  <tr><th>ID</th><th>Название</th><th>Рубрика</th><th>Дата</th><th></th></tr>
+  <% @articles.each do |article| %>
+    <tr>
+      <td><%= article.id %></td>
+      <td><%= article.title %></td>
+      <td><%= article.category %></td>
+      <td><%= article.created_at.strftime("%d.%m.%Y") %></td>
+      <td>
+        <%= link_to "Редактировать", edit_admin_article_path(article) %>
+        <%= button_to "Удалить", admin_article_path(article), method: :delete,
+                      form: { onsubmit: "return confirm('Удалить статью?')" } %>
+      </td>
+    </tr>
+  <% end %>
+</table>

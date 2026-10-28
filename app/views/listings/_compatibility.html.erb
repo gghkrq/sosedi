@@ -1,0 +1,22 @@
+<h2>Совместимость</h2>
+<% if @compatibility.available? %>
+  <p>
+    <strong><%= @compatibility.percent %>%</strong> совместимость с <%= @listing.user.name %>
+    (совпадает <%= @compatibility.matches_count %> из <%= @compatibility.items.size %> пунктов)
+  </p>
+  <table border="1" cellpadding="4">
+    <tr><th>Пункт</th><th>Вы</th><th><%= @listing.user.name %></th><th>Совпадение</th></tr>
+    <% @compatibility.items.each do |item| %>
+      <tr>
+        <td><%= item.title %></td>
+        <td><%= item.mine %></td>
+        <td><%= item.theirs %></td>
+        <td><%= { 1.0 => "да", 0.5 => "почти" }.fetch(item.score, "нет") %></td>
+      </tr>
+    <% end %>
+  </table>
+<% elsif current_user.preference.nil? %>
+  <p>Заполните свои предпочтения, чтобы увидеть совместимость. <%= link_to "Заполнить", edit_profile_path %></p>
+<% else %>
+  <p>Автор ещё не указал свои предпочтения.</p>
+<% end %>

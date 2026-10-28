@@ -1,0 +1,9 @@
+<% content_for :title, "Избранное" %>
+
+<h1>Избранное</h1>
+
+<% if @listings.any? %>
+  <%= render partial: "listings/listing", collection: @listings %>
+<% else %>
+  <p>В избранном пока пусто. <%= link_to "Смотреть объявления", listings_path %></p>
+<% end %>

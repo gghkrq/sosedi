@@ -1,16 +1,22 @@
-<p style="color: green"><%= notice %></p>
+<% content_for :title, "Объявления" %>
 
-<% content_for :title, "Listings" %>
+<h1>Объявления</h1>
 
-<h1>Listings</h1>
+<p><%= link_to "Разместить объявление", new_listing_path %></p>
 
-<div id="listings">
-  <% @listings.each do |listing| %>
-    <%= render listing %>
-    <p>
-      <%= link_to "Show this listing", listing %>
-    </p>
+<p>
+  Теги:
+  <%= link_to "Все теги", listings_path %>
+  <% @tags.each do |name| %>
+    | <%= link_to name, listings_path(tag: name) %>
   <% end %>
-</div>
+  <% if params[:tag].present? %>(выбран: <strong><%= params[:tag] %></strong>)<% end %>
+</p>
 
-<%= link_to "New listing", new_listing_path %>
+<hr>
+
+<% if @listings.any? %>
+  <%= render partial: "listing", collection: @listings %>
+<% else %>
+  <p>С этим тегом объявлений нет. <%= link_to "Показать все", listings_path %></p>
+<% end %>

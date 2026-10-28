@@ -1,11 +1,7 @@
-<% content_for :title, "New application" %>
+<% content_for :title, "Отклик на объявление" %>
 
-<h1>New application</h1>
+<h1>Отклик на объявление «<%= @listing.title %>»</h1>
 
 <%= render "form", application: @application %>
 
-<br>
-
-<div>
-  <<%= link_to "Back to listing", listing_path(@listing) %>
-</div>
+<p><%= link_to "Назад к объявлению", listing_path(@listing) %></p>

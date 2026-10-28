@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Roomatch" %></title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Roomatch">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
+    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <%# Includes all stylesheet files in app/assets/stylesheets %>
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+  </head>
+
+  <body>
+    <header class="container site-header">
+      <%= link_to root_path, class: "logo", "aria-label": "Roomatch — на главную" do %>
+        <%= image_tag "logo.png", alt: "Roomatch" %>
+      <% end %>
+
+      <nav class="nav">
+        <%= nav_link "Главная", root_path %>
+        <%= nav_link "Статьи", articles_path %>
+        <%= nav_link "Объявления", listings_path %>
+        <%= nav_link "Мои объявления", my_listings_path %>
+        <% if current_user&.admin? %>
+          <%= nav_link "Админка", admin_root_path %>
+        <% end %>
+      </nav>
+
+      <div class="header-right">
+        <%= link_to heart_icon, favorites_path, title: "Избранное", "aria-label": "Избранное", class: "icon-btn" %>
+
+        <% if logged_in? %>
+          <%= link_to current_user.name.first.upcase, profile_path, class: "avatar",
+                      title: "Профиль: #{current_user.name}" %>
+        <% else %>
+          <%= link_to "Войти", login_path %>
+          <%= link_to "Регистрация", signup_path, class: "btn btn--small" %>
+        <% end %>
+      </div>
+    </header>
+
+    <main class="container site-main">
+      <% if notice.present? %>
+        <p class="flash"><%= notice %></p>
+      <% end %>
+      <% if alert.present? %>
+        <p class="flash flash--alert"><%= alert %></p>
+      <% end %>
+
+      <%= yield %>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-cols">
+          <div>
+            <h3>Разделы</h3>
+            <ul>
+              <li><%= link_to "Главная", root_path %></li>
+              <li><%= link_to "Статьи", articles_path %></li>
+              <li><%= link_to "Объявления", listings_path %></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Аккаунт</h3>
+            <ul>
+              <li><%= link_to "Профиль", profile_path %></li>
+              <li><%= link_to "Мои объявления", my_listings_path %></li>
+              <li><%= link_to "Избранное", favorites_path %></li>
+              <li><%= link_to "Разместить объявление", new_listing_path %></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Связаться</h3>
+            <ul>
+              <li><a href="mailto:hello@roomatch.ru">hello@roomatch.ru</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <%= image_tag "logo-cream.png", alt: "Roomatch", class: "wordmark" %>
+
+        <div class="footer-bottom">
+          <span>© <%= Date.current.year %> Roomatch</span>
+          <span>Сервис поиска соседей по квартире</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,44 @@
+<% content_for :title, "Регистрация" %>
+
+<section class="page-head">
+  <h1 class="page-title">Регистрация</h1>
+  <p class="lead">Уже есть аккаунт? <%= link_to "Войдите", login_path %>.</p>
+</section>
+
+<%= form_with model: @user, url: signup_path, class: "form" do |form| %>
+  <%= render "shared/errors", object: @user %>
+
+  <div class="field">
+    <%= form.label :name, "Имя" %>
+    <%= form.text_field :name, required: true %>
+  </div>
+
+  <div class="field">
+    <%= form.label :email, "Почта" %>
+    <%= form.email_field :email, required: true %>
+  </div>
+
+  <div class="field">
+    <%= form.label :password, "Пароль, минимум 6 символов" %>
+    <%= form.password_field :password, required: true %>
+  </div>
+
+  <div class="field">
+    <%= form.label :password_confirmation, "Повторите пароль" %>
+    <%= form.password_field :password_confirmation, required: true %>
+  </div>
+
+  <div class="field">
+    <%= form.label :about, "О себе" %>
+    <%= form.textarea :about, rows: 4, placeholder: "Чем занимаетесь, какой у вас график, чего ждёте от соседей" %>
+  </div>
+
+  <div class="check">
+    <%= form.check_box :terms_accepted, required: true %>
+    <%= form.label :terms_accepted, "Я согласен(-на) на обработку персональных данных" %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit "Создать аккаунт", class: "btn" %>
+  </div>
+<% end %>

@@ -1,0 +1,30 @@
+<% content_for :title, "Админка — пользователи" %>
+<%= render "admin/shared/nav" %>
+
+<h1>Пользователи (<%= @users.size %>)</h1>
+
+<table border="1" cellpadding="6">
+  <tr>
+    <th>ID</th><th>Имя</th><th>Почта</th><th>Город</th><th>Рейтинг</th>
+    <th>Объявлений</th><th>Откликов</th><th>Роль</th><th>Зарегистрирован</th><th></th>
+  </tr>
+  <% @users.each do |user| %>
+    <tr>
+      <td><%= user.id %></td>
+      <td><%= link_to user.name, user %></td>
+      <td><%= user.email %></td>
+      <td><%= user.city %></td>
+      <td><%= user.rating %></td>
+      <td><%= user.listings.size %></td>
+      <td><%= user.applications.size %></td>
+      <td><%= user.admin? ? "админ" : "пользователь" %></td>
+      <td><%= user.created_at.strftime("%d.%m.%Y") %></td>
+      <td>
+        <% unless user == current_user %>
+          <%= button_to "Удалить", admin_user_path(user), method: :delete,
+                        form: { onsubmit: "return confirm('Удалить пользователя и все его данные?')" } %>
+        <% end %>
+      </td>
+    </tr>
+  <% end %>
+</table>

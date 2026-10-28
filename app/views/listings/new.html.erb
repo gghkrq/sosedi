@@ -1,11 +1,7 @@
-<% content_for :title, "New listing" %>
+<% content_for :title, "Новое объявление" %>
 
-<h1>New listing</h1>
+<h1>Новое объявление</h1>
 
 <%= render "form", listing: @listing %>
 
-<br>
-
-<div>
-  <%= link_to "Back to listings", listings_path %>
-</div>
+<p><%= link_to "Назад к объявлениям", listings_path %></p>

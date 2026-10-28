@@ -1,0 +1,16 @@
+<% content_for :title, "Статьи" %>
+
+<h1>Статьи</h1>
+
+<% @articles.each do |article| %>
+  <div>
+    <h3><%= link_to article.title, not_found_path %></h3>
+    <p><small><%= article.category %> · <%= article.created_at.strftime("%d.%m.%Y") %></small></p>
+    <p><%= article.summary %></p>
+  </div>
+  <hr>
+<% end %>
+
+<% if @articles.empty? %>
+  <p>Статей пока нет.</p>
+<% end %>

@@ -1,0 +1,22 @@
+<% content_for :title, "Вход" %>
+
+<section class="page-head">
+  <h1 class="page-title">Вход</h1>
+  <p class="lead">Нет аккаунта? <%= link_to "Зарегистрируйтесь", signup_path %> — это займёт минуту.</p>
+</section>
+
+<%= form_with url: login_path, class: "form" do |form| %>
+  <div class="field">
+    <%= form.label :email, "Почта" %>
+    <%= form.email_field :email, value: params[:email], required: true, autofocus: true %>
+  </div>
+
+  <div class="field">
+    <%= form.label :password, "Пароль" %>
+    <%= form.password_field :password, required: true %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit "Войти", class: "btn" %>
+  </div>
+<% end %>

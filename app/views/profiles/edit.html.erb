@@ -1,0 +1,94 @@
+<% content_for :title, "Редактирование профиля" %>
+
+<h1>Редактирование профиля</h1>
+
+<%= form_with model: @user, url: profile_path, method: :patch do |form| %>
+  <%= render "shared/errors", object: @user %>
+
+  <h2>Профиль</h2>
+
+  <div>
+    <%= form.label :name, "Имя", style: "display: block" %>
+    <%= form.text_field :name %>
+  </div>
+
+  <div>
+    <%= form.label :age, "Возраст", style: "display: block" %>
+    <%= form.number_field :age, min: 16 %>
+  </div>
+
+  <div>
+    <%= form.label :city, "Город", style: "display: block" %>
+    <%= form.text_field :city %>
+  </div>
+
+  <div>
+    <%= form.label :occupation, "Занятость", style: "display: block" %>
+    <%= form.text_field :occupation %>
+  </div>
+
+  <div>
+    <%= form.label :about, "О себе", style: "display: block" %>
+    <%= form.textarea :about, rows: 4 %>
+  </div>
+
+  <h2>Предпочтения по соседству</h2>
+
+  <%= form.fields_for :preference do |pref| %>
+    <div>
+      <%= pref.check_box :smoking %>
+      <%= pref.label :smoking, "Курю или нормально отношусь к курению" %>
+    </div>
+
+    <div>
+      <%= pref.check_box :pets %>
+      <%= pref.label :pets, "Есть животные или не против них" %>
+    </div>
+
+    <div>
+      <%= pref.check_box :remote_work %>
+      <%= pref.label :remote_work, "Работаю или учусь из дома" %>
+    </div>
+
+    <div>
+      <%= pref.check_box :shared_food %>
+      <%= pref.label :shared_food, "Готов(-а) делить продукты и готовить вместе" %>
+    </div>
+
+    <div>
+      <%= pref.label :budget, "Желаемая цена за место, ₽", style: "display: block" %>
+      <%= pref.number_field :budget %>
+    </div>
+
+    <div>
+      <%= pref.label :cleanliness, "Чистота", style: "display: block" %>
+      <%= pref.select :cleanliness, Preference::CLEANLINESS, include_blank: "не важно" %>
+    </div>
+
+    <div>
+      <%= pref.label :schedule, "График", style: "display: block" %>
+      <%= pref.select :schedule, Preference::SCHEDULES, include_blank: "не важно" %>
+    </div>
+
+    <div>
+      <%= pref.label :guests, "Как часто бывают гости", style: "display: block" %>
+      <%= pref.select :guests, Preference::GUESTS, include_blank: "не важно" %>
+    </div>
+
+    <div>
+      <%= pref.label :noise, "Отношение к шуму", style: "display: block" %>
+      <%= pref.select :noise, Preference::NOISE, include_blank: "не важно" %>
+    </div>
+
+    <div>
+      <%= pref.label :alcohol, "Алкоголь", style: "display: block" %>
+      <%= pref.select :alcohol, Preference::ALCOHOL, include_blank: "не важно" %>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.submit "Сохранить профиль" %>
+  </div>
+<% end %>
+
+<p><%= link_to "Назад в профиль", profile_path %></p>

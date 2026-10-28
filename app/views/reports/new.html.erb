@@ -1,0 +1,23 @@
+<% content_for :title, "Жалоба на объявление" %>
+
+<h1>Жалоба на объявление «<%= @listing.title %>»</h1>
+
+<%= form_with(model: [ @listing, @report ]) do |form| %>
+  <%= render "shared/errors", object: @report %>
+
+  <div>
+    <%= form.label :reason, "Причина", style: "display: block" %>
+    <%= form.select :reason, Report::REASONS, include_blank: "Выберите причину" %>
+  </div>
+
+  <div>
+    <%= form.label :description, "Подробности", style: "display: block" %>
+    <%= form.textarea :description, rows: 5 %>
+  </div>
+
+  <div>
+    <%= form.submit "Отправить жалобу" %>
+  </div>
+<% end %>
+
+<p><%= link_to "Назад к объявлению", listing_path(@listing) %></p>

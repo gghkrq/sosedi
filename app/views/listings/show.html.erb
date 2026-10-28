@@ -1,21 +1,75 @@
-<p style="color: green"><%= notice %></p>
+<% content_for :title, @listing.title %>
 
-<%= render @listing %>
+<h1><%= @listing.title %></h1>
 
-<h2>Отклики</h2>
+<p>
+  Статус: <%= listing_status_text(@listing) %><br>
+  Автор: <%= link_to @listing.user.name, @listing.user %>, рейтинг <%= @listing.user.rating %>
+</p>
 
-<% @listing.applications.each do |application| %>
-  <div>
-    <strong><%= application.user.name %></strong>
-    <p><%= application.message %></p>
-    <p>Статус: <%= application.status %></p>
-  </div>
+<% if @compatibility %>
+  <%= render "compatibility" %>
+<% elsif !logged_in? %>
+  <p><%= link_to "Войдите", login_path %>, чтобы увидеть совместимость с автором.</p>
 <% end %>
 
-<div>
-  <%= link_to "Откликнуться", new_listing_application_path(@listing) %>
-  <%= link_to "Edit this listing", edit_listing_path(@listing) %> |
-  <%= link_to "Back to listings", listings_path %>
+<h2>Описание</h2>
+<%= simple_format(@listing.description) %>
 
-  <%= button_to "Destroy this listing", @listing, method: :delete %>
-</div>
+<ul>
+  <li>Стоимость: <%= rub(@listing.rent) %> в месяц</li>
+  <li>Город: <%= @listing.city %></li>
+  <li>Комнат: <%= @listing.rooms %></li>
+  <li>Максимум человек: <%= @listing.max_people %></li>
+  <li>Живут: <%= residents_text(@listing) %></li>
+  <li>Активно: <%= active_period(@listing) %></li>
+  <li>В избранном: <%= @listing.favorites.count %></li>
+  <% if @listing.tags.any? %>
+    <li>Теги: <%= @listing.tag_names %></li>
+  <% end %>
+</ul>
+
+<% if current_user == @listing.user %>
+  <p><%= link_to "Редактировать", edit_listing_path(@listing) %></p>
+  <%= button_to "Удалить объявление", @listing, method: :delete,
+                form: { onsubmit: "return confirm('Удалить объявление?')" } %>
+<% else %>
+  <p><%= link_to "Откликнуться", new_listing_application_path(@listing) %></p>
+  <% if logged_in? %>
+    <% if @favorited %>
+      <%= button_to "Убрать из избранного", listing_favorite_path(@listing), method: :delete %>
+    <% else %>
+      <%= button_to "В избранное", listing_favorite_path(@listing), method: :post %>
+    <% end %>
+  <% end %>
+  <p>
+    <% if @reported %>
+      Вы уже пожаловались на это объявление.
+    <% else %>
+      <%= link_to "Пожаловаться", new_listing_report_path(@listing) %>
+    <% end %>
+  </p>
+<% end %>
+
+<% if @participant %>
+  <h2>Отклики (<%= @applications.size %>)</h2>
+  <% @applications.each do |application| %>
+    <div>
+      <strong><%= link_to application.user.name, application.user %></strong>
+      (<%= status_label(application.status) %>)
+      <p><%= application.message %></p>
+    </div>
+  <% end %>
+  <% if @applications.empty? %><p>Откликов пока нет.</p><% end %>
+<% end %>
+
+<h2>Отзывы о <%= @listing.user.name %> (<%= @reviews.size %>)</h2>
+<% @reviews.each do |review| %>
+  <div>
+    <strong><%= link_to review.author.name, review.author %></strong>: <%= review.rating %>/5
+    <p><%= review.text %></p>
+  </div>
+<% end %>
+<% if @reviews.empty? %><p>Отзывов пока нет.</p><% end %>
+
+<p><%= link_to "Ко всем объявлениям", listings_path %></p>

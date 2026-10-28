@@ -1,15 +1,79 @@
-<p style="color: green"><%= notice %></p>
+<% own_profile = (@user == current_user) %>
+<% content_for :title, own_profile ? "Мой профиль" : @user.name %>
 
-<%= render @user %>
+<h1><%= own_profile ? "Мой профиль" : "Профиль пользователя" %></h1>
 
-<h2>Объявления пользователя</h2>
+<h2><%= [ @user.name, @user.age ].compact.join(", ") %></h2>
 
-<% @user.listings.each do |listing| %>
-  <div>
-    <%= link_to listing.title, listing_path(listing) %>
-  </div>
+<% if own_profile %>
+  <p><%= link_to "Редактировать профиль", edit_profile_path %></p>
+  <%= button_to "Выйти", logout_path, method: :delete %>
 <% end %>
 
-<div>
-  <%= link_to "Back to users", users_path %>
-</div>
+<h3>Описание</h3>
+<p><%= @user.about.presence || "Пока ничего не рассказано." %></p>
+
+<h3>О пользователе</h3>
+<ul>
+  <li>Рейтинг: <%= @user.rating %></li>
+  <li>Город: <%= @user.city.presence || "—" %></li>
+  <li>Занятость: <%= @user.occupation.presence || "—" %></li>
+  <% if own_profile %>
+    <li>Почта: <%= @user.email %></li>
+  <% end %>
+</ul>
+
+<h3>Предпочтения</h3>
+<% if (preference = @user.preference) %>
+  <ul>
+    <li>Цена за место: <%= rub(preference.budget) %></li>
+    <li>Курение: <%= yes_no(preference.smoking) %></li>
+    <li>Животные: <%= yes_no(preference.pets) %></li>
+    <li>Работаю из дома: <%= yes_no(preference.remote_work) %></li>
+    <li>Общие продукты: <%= yes_no(preference.shared_food) %></li>
+    <li>Чистота: <%= preference.cleanliness.presence || "не важно" %></li>
+    <li>График: <%= preference.schedule.presence || "не важно" %></li>
+    <li>Гости: <%= preference.guests.presence || "не важно" %></li>
+    <li>Шум: <%= preference.noise.presence || "не важно" %></li>
+    <li>Алкоголь: <%= preference.alcohol.presence || "не важно" %></li>
+  </ul>
+<% else %>
+  <p>
+    Не указаны.
+    <% if own_profile %><%= link_to "Заполнить", edit_profile_path %><% end %>
+  </p>
+<% end %>
+
+<h3>Объявления</h3>
+<% @user.listings.each do |listing| %>
+  <div><%= link_to listing.title, listing %> (<%= listing_status_text(listing) %>)</div>
+<% end %>
+<% if @user.listings.empty? %><p>Объявлений нет.</p><% end %>
+
+<h3>Отзывы (<%= @user.received_reviews.size %>)</h3>
+<% @user.received_reviews.includes(:author).each do |review| %>
+  <div>
+    <strong><%= link_to review.author.name, review.author %></strong>: <%= review.rating %>/5
+    <p><%= review.text %></p>
+  </div>
+<% end %>
+<% if @user.received_reviews.empty? %><p>Отзывов пока нет.</p><% end %>
+
+<% if own_profile %>
+  <h3>Уведомления</h3>
+  <% @user.notifications.newest.each do |notification| %>
+    <div>
+      <%= "[новое] " unless notification.read %><%= notification.text %>
+      <small>(<%= notification.created_at.strftime("%d.%m.%Y %H:%M") %>)</small>
+    </div>
+  <% end %>
+  <% if @user.notifications.empty? %><p>Уведомлений нет.</p><% end %>
+
+  <h3>Мои отклики</h3>
+  <% @user.applications.includes(:listing).each do |application| %>
+    <div>
+      <%= link_to application.listing.title, application.listing %> — <%= status_label(application.status) %>
+    </div>
+  <% end %>
+  <% if @user.applications.empty? %><p>Вы ещё никуда не откликались.</p><% end %>
+<% end %>

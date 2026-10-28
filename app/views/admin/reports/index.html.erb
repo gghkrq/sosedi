@@ -1,0 +1,26 @@
+<% content_for :title, "Админка — жалобы" %>
+<%= render "admin/shared/nav" %>
+
+<h1>Жалобы (<%= @reports.size %>)</h1>
+
+<table border="1" cellpadding="6">
+  <tr><th>ID</th><th>От кого</th><th>Объявление</th><th>Причина</th><th>Описание</th><th>Статус</th><th>Действия</th></tr>
+  <% @reports.each do |report| %>
+    <tr>
+      <td><%= report.id %></td>
+      <td><%= link_to report.user.name, report.user %></td>
+      <td><%= link_to report.listing.title, report.listing %></td>
+      <td><%= report.reason %></td>
+      <td><%= report.description %></td>
+      <td><%= status_label(report.status) %></td>
+      <td>
+        <% if report.status == "new" %>
+          <%= button_to "Рассмотрена", admin_report_path(report, status: "reviewed"), method: :patch %>
+          <%= button_to "Отклонить", admin_report_path(report, status: "rejected"), method: :patch %>
+        <% else %>
+          —
+        <% end %>
+      </td>
+    </tr>
+  <% end %>
+</table>

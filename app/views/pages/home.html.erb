@@ -1,0 +1,59 @@
+<% content_for :title, "Roomatch — поиск соседей" %>
+
+<section class="hero">
+  <h1 class="page-title">Найдите соседа, с которым легко жить</h1>
+  <p class="lead">Подбираем соседей по привычкам: смотрите процент совместимости, отзывы и тех, кто уже живёт в квартире.</p>
+  <%= link_to "Найти соседа", listings_path, class: "btn btn--large" %>
+</section>
+
+<% if @cities.any? %>
+  <section class="marquee-section">
+    <h2 class="section-title">Ищут соседей в городах</h2>
+    <div class="marquee">
+      <div class="marquee__track">
+        <% 2.times do |copy| %>
+          <% (@cities * 3).each do |city| %>
+            <%= link_to city, listings_path, tabindex: (copy.zero? ? nil : -1), "aria-hidden": (copy.zero? ? nil : true) %>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </section>
+<% end %>
+
+<section class="section">
+  <h2 class="section-title">Как это работает</h2>
+  <ol class="rows">
+    <li class="row">
+      <span class="step-num">1</span>
+      <div>
+        <h3 class="row__title">Расскажите о себе</h3>
+        <p class="muted">Зарегистрируйтесь и заполните предпочтения: график, гости, шум, курение, животные и чистота.</p>
+      </div>
+    </li>
+    <li class="row">
+      <span class="step-num">2</span>
+      <div>
+        <h3 class="row__title">Найдите объявление</h3>
+        <p class="muted">Выберите город и теги. В каждом объявлении видно, кто уже живёт и насколько вы совместимы.</p>
+      </div>
+    </li>
+    <li class="row">
+      <span class="step-num">3</span>
+      <div>
+        <h3 class="row__title">Откликнитесь</h3>
+        <p class="muted">Напишите автору сообщение. Он получит уведомление и ответит вам.</p>
+      </div>
+    </li>
+  </ol>
+</section>
+
+<section class="section">
+  <h2 class="section-title">Свежие объявления</h2>
+  <div class="grid">
+    <%= render partial: "listings/card", collection: @latest_listings, as: :listing %>
+  </div>
+  <div class="actions">
+    <%= link_to "Все объявления", listings_path, class: "btn btn--ghost" %>
+  </div>
+</section>
